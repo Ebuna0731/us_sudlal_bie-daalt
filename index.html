@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ус зүйн мэдээ - Усны нөөцийн мэдээлэл</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --secondary: #34a853;
+            --accent: #4285f4;
+            --light: #f8f9fa;
+            --dark: #202124;
+            --water-blue: #1e88e5;
+            --water-dark: #0d47a1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(90deg, var(--water-dark) 0%, var(--water-blue) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="none"><path fill="%231e88e5" fill-opacity="0.1" d="M0,0 L1200,0 L1200,700 Q600,800 0,700 Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--water-dark);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: #555;
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--water-dark);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--water-blue);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .card-header {
+            background: var(--water-blue);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-value {
+            font-weight: bold;
+            color: var(--water-dark);
+        }
+        
+        /* Chart Section */
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        /* Map Section */
+        .map-placeholder {
+            height: 400px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--water-dark);
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--water-dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--water-blue);
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            section {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-water"></i>
+                    <h1>Ус Зүйн Мэдээ</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Нүүр</a></li>
+                        <li><a href="#data">Өгөгдөл</a></li>
+                        <li><a href="#quality">Чанар</a></li>
+                        <li><a href="#levels">Түвшин</a></li>
+                        <li><a href="#contact">Холбоо</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>Монгол орны усны нөөцийн мэдээлэл</h2>
+            <p>Ус зүйн мэдээллийг програмчлалын аргаар боловсруулж, хэрэглэгчдэд хүргэх веб сайт. Энэхүү систем нь усны чанар, түвшин, урсац зэрэг мэдээллийг бодит цагаар харах боломжийг олгоно.</p>
+        </div>
+    </section>
+
+    <!-- Data Overview Section -->
+    <section id="data">
+        <div class="container">
+            <h2 class="section-title">Ус зүйн мэдээллийн тойм</h2>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-river"></i> Гол мөрний мэдээ</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="data-item">
+                            <span>Туул гол</span>
+                            <span class="data-value">125 м³/с</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Сэлбэ гол</span>
+                            <span class="data-value">85 м³/с</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Орхон гол</span>
+                            <span class="data-value">320 м³/с</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Хараа гол</span>
+                            <span class="data-value">65 м³/с</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-temperature-low"></i> Усны температур</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="data-item">
+                            <span>Туул гол</span>
+                            <span class="data-value">12.5°C</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Сэлбэ гол</span>
+                            <span class="data-value">10.8°C</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Орхон гол</span>
+                            <span class="data-value">8.3°C</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Хараа гол</span>
+                            <span class="data-value">9.7°C</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tint"></i> Усны чанарын үзүүлэлт</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="data-item">
+                            <span>pH түвшин</span>
+                            <span class="data-value">7.2</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Хүчилтөрөгч</span>
+                            <span class="data-value">8.5 мг/л</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Тунгалаг байдал</span>
+                            <span class="data-value">92%</span>
+                        </div>
+                        <div class="data-item">
+                            <span>Давсжилт</span>
+                            <span class="data-value">0.05%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water Quality Section -->
+    <section id="quality" style="background: #f0f7ff;">
+        <div class="container">
+            <h2 class="section-title">Усны чанарын үзүүлэлтүүд</h2>
+            <div class="chart-container">
+                <canvas id="qualityChart"></canvas>
+            </div>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-flask"></i> Химийн шинжилгээ</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Усны химийн найрлагыг тогтмол шалгаж, хортой бодисын агууламжийг хянадаг. Дараах үзүүлэлтүүдэд анхаарч байна:</p>
+                        <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                            <li>Хүнд металлын агууламж</li>
+                            <li>Нитрат, нитритийн хэмжээ</li>
+                            <li>Хлорын агууламж</li>
+                            <li>Давсны концентраци</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bacteria"></i> Биологийн шинжилгээ</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Усанд амьдардаг биет организмуудыг судалж, усны экосистемийн эрүүл байдлыг тодорхойлдог.</p>
+                        <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                            <li>Бактерийн тоо</li>
+                            <li>Загас, ёроолын амьтдын тоо</li>
+                            <li>Хортой хөгстөн</li>
+                            <li>Нянгийн тоо</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water Levels Section -->
+    <section id="levels">
+        <div class="container">
+            <h2 class="section-title">Усны түвшний мэдээ</h2>
+            <div class="chart-container">
+                <canvas id="levelChart"></canvas>
+            </div>
+            <!-- <div class="map-placeholder">
+                <div style="text-align: center;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>Усны түвшний хэмжилт хийгдэж буй газруудын байршил</p>
+                </div>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" style="background: #f0f7ff;">
+        <div class="container">
+            <!-- <h2 class="section-title">Холбогдох мэдээлэл</h2>
+            <div class="card-container"> -->
+                <!-- <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-envelope"></i> Холбоо барих</h3>
+                    </div>
+                    <!-- <div class="card-body">
+                        <p><i class="fas fa-map-marker-alt"></i> Хаяг: Улаанбаатар хот, Сүхбаатар дүүрэг</p>
+                        <p><i class="fas fa-phone"></i> Утас: (11) 123-456</p>
+                        <p><i class="fas fa-envelope"></i> Имэйл: info@uszuinmedee.mn</p>
+                        
+                    </div> -->
+                </div> -->
+                
+                <!-- <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-info-circle"></i> Нэмэлт мэдээлэл</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Энэхүү веб сайт нь Монгол улсын усны нөөцийн мэдээллийг нэгтгэн харуулах зорилготой. Өгөгдлийг цаг тухайд нь шинэчлэх ажиллагаа явагддаг.</p>
+                        <p style="margin-top: 1rem;">Мэдээллийн төв: Ус зүйн төв лаборатори</p>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Ус Зүйн Мэдээ</h3>
+                    <p>Монгол орны усны нөөцийн мэдээллийг нэгтгэн хүргэх веб сайт.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Холбоос</h3>
+                    <a href="#home">Нүүр</a>
+                    <a href="#data">Өгөгдөл</a>
+                    <a href="#quality">Чанар</a>
+                    <a href="#levels">Түвшин</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Эрдэнэбуян 22b1num1657</h3>
+                    <!-- <a href="#">Усны асуудал эрхэлсэн байгууллага</a>
+                    <a href="#">Байгаль орчин, аялал жуулчлалын яам</a>
+                    <a href="#">Цаг уур, орчны шинжилгээний институт</a> -->
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Ус Зүйн Мэдээ. Бүх эрх хуулиар хамгаалагдсан.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Water Quality Chart
+        const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+        const qualityChart = new Chart(qualityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Туул гол', 'Сэлбэ гол', 'Орхон гол', 'Хараа гол', 'Эгийн гол', 'Хануй гол'],
+                datasets: [{
+                    label: 'pH түвшин',
+                    data: [7.2, 7.5, 6.9, 7.1, 7.3, 7.0],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Хүчилтөрөгч (мг/л)',
+                    data: [8.5, 9.2, 7.8, 8.1, 8.9, 7.5],
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Тунгалаг байдал (%)',
+                    data: [92, 88, 85, 90, 87, 82],
+                    backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Гол мөрний усны чанарын үзүүлэлтүүд'
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Water Levels Chart
+        const levelCtx = document.getElementById('levelChart').getContext('2d');
+        const levelChart = new Chart(levelCtx, {
+            type: 'line',
+            data: {
+                labels: ['1-р сар', '2-р сар', '3-р сар', '4-р сар', '5-р сар', '6-р сар', '7-р сар', '8-р сар', '9-р сар', '10-р сар', '11-р сар', '12-р сар'],
+                datasets: [{
+                    label: 'Туул гол (см)',
+                    data: [120, 115, 125, 180, 220, 250, 280, 260, 210, 170, 140, 125],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                }, {
+                    label: 'Сэлбэ гол (см)',
+                    data: [95, 90, 100, 150, 190, 210, 240, 220, 180, 140, 110, 100],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                }, {
+                    label: 'Орхон гол (см)',
+                    data: [180, 175, 185, 240, 280, 310, 350, 330, 280, 230, 200, 185],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Гол мөрний усны түвшний өөрчлөлт'
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
